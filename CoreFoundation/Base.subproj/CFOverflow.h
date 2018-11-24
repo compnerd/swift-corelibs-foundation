@@ -55,7 +55,7 @@ CF_INLINE _CFOverflowResult _CFPositiveIntegerProductWouldOverflow(CFIndex si_a,
 
 CF_INLINE _CFOverflowResult _CFPointerSumWouldOverflow(void const *p, size_t n, void * /*_Nullable*/ * /*_Nullable*/ outSum) {
     _CFOverflowResult result = _CFOverflowResultOK;
-#if __LP64__
+#if __LP64__ || __LLP64__
     uint64_t sum = 0;
     uint64_t const lhs = (uint64_t)p;
     uint64_t const rhs = (uint64_t)n;

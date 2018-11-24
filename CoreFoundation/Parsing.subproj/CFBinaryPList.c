@@ -56,7 +56,7 @@ CF_INLINE uint64_t __check_uint64_mul_unsigned_unsigned(uint64_t x, uint64_t y, 
   return x * y;
 };
 
-#if __LP64__
+#if __LP64__ || __LLP64__
 #define check_ptr_add(p, a, err)	(const uint8_t *)__check_uint64_add_unsigned_unsigned((uintptr_t)p, (uintptr_t)a, err)
 #define check_size_t_mul(b, a, err)	(size_t)__check_uint64_mul_unsigned_unsigned((size_t)b, (size_t)a, err)
 #else

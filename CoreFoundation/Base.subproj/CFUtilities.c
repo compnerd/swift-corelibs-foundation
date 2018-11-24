@@ -1213,7 +1213,7 @@ CF_PRIVATE Boolean _CFReadMappedFromFile(CFStringRef path, Boolean map, Boolean 
         if (errorPtr) *errorPtr = _CFErrorWithFilePathCodeDomain(kCFErrorDomainPOSIX, ENOMEM, path);
         return false;
     }
-#if __LP64__
+#if __LP64__ || __LLP64__
 #else
     if (statBuf.st_size > (1ull << 31)) {	// refuse to do more than 2GB
         close(fd);

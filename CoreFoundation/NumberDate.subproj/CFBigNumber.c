@@ -26,7 +26,7 @@ typedef struct {
 
 CF_EXPORT CFNumberType _CFNumberGetType2(CFNumberRef number);
 
-#if __LP64__
+#if __LP64__ || __LLP64__
 
 #ifndef _INT128_T
 #define _INT128_T
@@ -116,7 +116,7 @@ void _CFBigNumInitWithInt64(_CFBigNum *r, int64_t inNum) {
     r->digits[2] = dig2;
 }
 
-#ifdef __LP64__
+#if defined(__LP64__) || defined(__LLP64__)
 void _CFBigNumInitWithInt128(_CFBigNum *r, __int128_t inNum) {
     memset(r, 0, sizeof(*r));
     __uint128_t unsignInNum = inNum;
@@ -170,7 +170,7 @@ void _CFBigNumInitWithUInt64(_CFBigNum *r, uint64_t inNum) {
     r->digits[2] = dig2;
 }
 
-#ifdef __LP64__
+#if defined(__LP64__) || defined(__LLP64__)
 void _CFBigNumInitWithUInt128(_CFBigNum *r, __uint128_t inNum) {
     memset(r, 0, sizeof(*r));
     __uint128_t unsignInNum = inNum;
@@ -225,7 +225,7 @@ int64_t _CFBigNumGetInt64(const _CFBigNum *num) {
     return result;
 }
 
-#if __LP64__
+#if __LP64__ || __LLP64__
 __int128_t _CFBigNumGetInt128(const _CFBigNum *num) {
     __int128_t result = num->digits[0];
     result += (__int128_t)num->digits[1] * BIG_DIGITS_LIMIT;
@@ -262,7 +262,7 @@ uint64_t _CFBigNumGetUInt64(const _CFBigNum *num) {
     return result;
 }
 
-#if __LP64__
+#if __LP64__ || __LLP64__
 __uint128_t _CFBigNumGetUInt128(const _CFBigNum *num) {
     __uint128_t result = num->digits[0];
     result += (__uint128_t)num->digits[1] * BIG_DIGITS_LIMIT;
@@ -331,7 +331,7 @@ void _CFBigNumInitWithBytes(_CFBigNum *r, const void *bytes, CFNumberType type) 
             _CFBigNumInitWithInt32(r, *(int32_t *)bytes);
         }
         return;
-#if __LP64__
+#if __LP64__ || __LLP64__
     case kCFNumberSInt128Type: {
         CFSInt128Struct s;
         memmove(&s, bytes, sizeof(CFSInt128Struct)); // the hard way because bytes might not be aligned
@@ -381,7 +381,7 @@ CFNumberRef _CFNumberCreateWithBigNum(const _CFBigNum *input) {
             return result;
         }
     }
-#if __LP64__
+#if __LP64__ || __LLP64__
     _CFBigNumInitWithInt128(&maxlimit, INT128_MAX);
     _CFBigNumInitWithInt128(&minlimit, INT128_MIN);
     CFComparisonResult cr = _CFBigNumCompare(input, &maxlimit);

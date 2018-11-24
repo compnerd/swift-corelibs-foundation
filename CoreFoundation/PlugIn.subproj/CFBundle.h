@@ -304,7 +304,7 @@ CFPlugInRef CFBundleGetPlugIn(CFBundleRef bundle);
 
 /* ==================== Resource Manager-Related API ==================== */
 
-#if __LP64__
+#if __LP64__ || __LLP64__
 typedef int CFBundleRefNum;
 #else
 typedef SInt16 CFBundleRefNum;
