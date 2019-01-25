@@ -10,10 +10,8 @@
 
 import CoreFoundation
 
-#if os(macOS) || os(iOS)
 internal let kCFURLPOSIXPathStyle = CFURLPathStyle.cfurlposixPathStyle
 internal let kCFURLWindowsPathStyle = CFURLPathStyle.cfurlWindowsPathStyle
-#endif
 
 private func _standardizedPath(_ path: String) -> String {
     if !path.absolutePath {
