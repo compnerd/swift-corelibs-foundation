@@ -233,6 +233,9 @@ open class Process: NSObject {
     }
 
     open func run() throws {
+    #if os(Windows)
+    NSUnimplemented()
+    #else
         
         self.processLaunchedCondition.lock()
         defer {
@@ -258,12 +261,21 @@ open class Process: NSObject {
                 throw _NSErrorWithErrno(errno, reading: true, path: launchPath)
             }
 
-            guard statInfo.st_mode & S_IFMT == S_IFREG else {
+#if os(Windows)
+            let isRegularFile: Bool =
+                Int32(statInfo.st_mode) & ucrt.S_IFMT == ucrt.S_IFREG
+#else
+            let isRegularFile: Bool = statInfo.st_mode & S_IFMT == S_IFREG
+#endif
+            guard isRegularFile == true else {
                 throw NSError(domain: NSCocoaErrorDomain, code: NSFileNoSuchFileError)
             }
+#if !os(Windows)
+            // NOTE: Windows does not have the concept of an execute bit
             guard access(fsRep, X_OK) == 0 else {
                 throw _NSErrorWithErrno(errno, reading: true, path: launchPath)
             }
+#endif
         })
         // Convert the arguments array into a posix_spawn-friendly format
         
@@ -498,35 +510,73 @@ open class Process: NSObject {
         isRunning = true
         
         self.processIdentifier = pid
+    #endif
     }
     
     open func interrupt() {
         precondition(hasStarted, "task not launched")
+#if os(Windows)
+        TerminateProcess(processIdentifier, UINT(SIGINT))
+#else
         kill(processIdentifier, SIGINT)
+#endif
     }
 
     open func terminate() {
         precondition(hasStarted, "task not launched")
+#if os(Windows)
+        TerminateProcess(processIdentifier, UINT(SIGTERM))
+#else
         kill(processIdentifier, SIGTERM)
+#endif
     }
 
     // Every suspend() has to be balanced with a resume() so keep a count of both.
     private var suspendCount = 0
 
     open func suspend() -> Bool {
+#if os(Windows)
+      let pNTSuspendProcess: Optional<(HANDLE) -> LONG> =
+          unsafeBitCast(GetProcAddress(GetModuleHandleA("ntdll.dll"),
+                                       "NtSuspendProcess"),
+                        to: Optional<(HANDLE) -> LONG>.self)
+      if let pNTSuspendProcess = pNTSuspendProcess {
+        if pNTSuspendProcess(processIdentifier) < 0 {
+          return false
+        }
+        suspendCount += 1
+        return true
+      }
+      return false
+#else
         if kill(processIdentifier, SIGSTOP) == 0 {
             suspendCount += 1
             return true
         } else {
             return false
         }
+#endif
     }
 
     open func resume() -> Bool {
-        var success = true
+        var success: Bool = true
+#if os(Windows)
+        if suspendCount == 1 {
+          let pNTResumeProcess: Optional<(HANDLE) -> NTSTATUS> =
+              unsafeBitCast(GetProcAddress(GetModuleHandleA("ntdll.dll"),
+                                           "NtResumeProcess"),
+                            to: Optional<(HANDLE) -> NTSTATUS>.self)
+          if let pNTResumeProcess = pNTResumeProcess {
+            if pNTResumeProcess(processIdentifier) < 0 {
+              success = false
+            }
+          }
+        }
+#else
         if suspendCount == 1 {
             success = kill(processIdentifier, SIGCONT) == 0
         }
+#endif
         if success {
             suspendCount -= 1
         }
@@ -534,10 +584,22 @@ open class Process: NSObject {
     }
     
     // status
+#if os(Windows)
+    open private(set) var processIdentifier: HANDLE = INVALID_HANDLE_VALUE
+    open private(set) var isRunning: Bool = false
+
+    private var hasStarted: Bool {
+      return processIdentifier != INVALID_HANDLE_VALUE
+    }
+    private var hasFinished: Bool {
+      return hasStarted && !isRunning
+    }
+#else
     open private(set) var processIdentifier: Int32 = 0
     open private(set) var isRunning: Bool = false
     private var hasStarted: Bool { return processIdentifier > 0 }
     private var hasFinished: Bool { return !isRunning && processIdentifier > 0 }
+#endif
 
     private var _terminationStatus: Int32 = 0
     public var terminationStatus: Int32 {
