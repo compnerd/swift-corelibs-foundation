@@ -2893,7 +2893,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = (
 					"-DCF_BUILDING_CF",
-					"-DDEPLOYMENT_TARGET_MACOSX",
 					"-DDEPLOYMENT_RUNTIME_SWIFT",
 					"-DDEPLOYMENT_ENABLE_LIBDISPATCH",
 					"-DHAVE_STRUCT_TIMESPEC",
@@ -2967,7 +2966,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = (
 					"-DCF_BUILDING_CF",
-					"-DDEPLOYMENT_TARGET_MACOSX",
 					"-DDEPLOYMENT_RUNTIME_SWIFT",
 					"-DDEPLOYMENT_ENABLE_LIBDISPATCH",
 					"-DHAVE_STRUCT_TIMESPEC",
@@ -3028,7 +3026,6 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				OTHER_CFLAGS = (
 					"-DCF_BUILDING_CF",
-					"-DDEPLOYMENT_TARGET_MACOSX",
 					"-DDEPLOYMENT_RUNTIME_SWIFT",
 					"-DDEPLOYMENT_ENABLE_LIBDISPATCH",
 					"-I$(SRCROOT)/bootstrap/common/usr/include",
@@ -3070,7 +3067,6 @@
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				OTHER_CFLAGS = (
 					"-DCF_BUILDING_CF",
-					"-DDEPLOYMENT_TARGET_MACOSX",
 					"-DDEPLOYMENT_RUNTIME_SWIFT",
 					"-DDEPLOYMENT_ENABLE_LIBDISPATCH",
 					"-I$(SRCROOT)/bootstrap/common/usr/include",

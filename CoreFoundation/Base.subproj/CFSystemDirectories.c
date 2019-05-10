@@ -18,7 +18,11 @@
 #include <CoreFoundation/CFPriv.h>
 #include "CFInternal.h"
 
+<<<<<<< HEAD
 #if DEPLOYMENT_TARGET_MACOSX || TARGET_OS_IPHONE
+=======
+#if TARGET_OS_OSX || TARGET_OS_IOS
+>>>>>>> 02e2a4ed... DEPLOYMENT_TARGET_MACOSX -> TARGET_OS_OSX
 
 /* We use the System framework implementation on Mach.
 */
@@ -52,7 +56,7 @@ CFSearchPathEnumerationState __CFGetNextSearchPathEnumeration(CFSearchPathEnumer
 #endif
 
 
-#if DEPLOYMENT_TARGET_MACOSX || TARGET_OS_IPHONE
+#if TARGET_OS_OSX || TARGET_OS_IPHONE
 
 CFArrayRef CFCopySearchPathForDirectoriesInDomains(CFSearchPathDirectory directory, CFSearchPathDomainMask domainMask, Boolean expandTilde) {
     CFMutableArrayRef array;
