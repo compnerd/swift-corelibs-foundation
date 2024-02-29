@@ -351,7 +351,9 @@ extension FileManager {
                     defer { ps.deallocate() }
                     ps.initialize(to: UnsafeMutablePointer(mutating: fsRep))
                     ps.advanced(by: 1).initialize(to: nil)
-                    return fts_open(ps, FTS_PHYSICAL | FTS_XDEV | FTS_NOCHDIR | FTS_NOSTAT, nil)
+                    return ps.withMemoryRebound(to: UnsafeMutablePointer<CChar>.self, capacity: 2) {
+                        fts_open($0, FTS_PHYSICAL | FTS_XDEV | FTS_NOCHDIR | FTS_NOSTAT, nil)
+                    }
                 }
                 if _stream == nil {
                     throw _NSErrorWithErrno(errno, reading: true, url: url)
@@ -398,13 +400,13 @@ extension FileManager {
 
                 _current = fts_read(stream)
                 while let current = _current {
-                    let filename = FileManager.default.string(withFileSystemRepresentation: current.pointee.fts_path, length: Int(current.pointee.fts_pathlen))
+                    let filename = FileManager.default.string(withFileSystemRepresentation: current.pointee.fts_path!, length: Int(current.pointee.fts_pathlen))
 
                     switch Int32(current.pointee.fts_info) {
                         case FTS_D:
                             let (showFile, skipDescendants) = match(filename: filename, to: _options, isDir: true)
                             if skipDescendants {
-                                fts_set(_stream, _current, FTS_SKIP)
+                                fts_set(stream, _current!, FTS_SKIP)
                             }
                             if showFile {
                                  return URL(fileURLWithPath: filename, isDirectory: true)
@@ -578,7 +580,7 @@ extension FileManager {
             let finalErrno = originalItemURL.withUnsafeFileSystemRepresentation { (originalFS) -> Int32? in
                 return newItemURL.withUnsafeFileSystemRepresentation { (newItemFS) -> Int32? in
                     // This is an atomic operation in many OSes, but is not guaranteed to be atomic by the standard.
-                    if rename(newItemFS, originalFS) == 0 {
+                    if rename(newItemFS!, originalFS!) == 0 {
                         return nil
                     } else {
                         return errno
