@@ -650,7 +650,7 @@ extension FileManager {
 
         #if !os(WASI) // WASI doesn't have ownership concept
         // Set the file permissions using fchmod() instead of when open()ing to avoid umask() issues
-        let permissions = fileInfo.st_mode & ~S_IFMT
+        let permissions = fileInfo.st_mode & ~mode_t(S_IFMT)
         guard fchmod(dstfd, permissions) == 0 else {
             throw _NSErrorWithErrno(errno, reading: false, path: dstPath,
                 extraUserInfo: extraErrorInfo(srcPath: srcPath, dstPath: dstPath, userVariant: variant))

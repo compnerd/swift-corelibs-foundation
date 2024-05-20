@@ -886,6 +886,8 @@ open class FileManager : NSObject {
         return Int(mode & ~UInt32(ucrt.S_IFMT))
 #elseif canImport(Darwin)
         return Int(mode & ~UInt32(S_IFMT))
+#elseif canImport(Android)
+        return Int(mode & ~mode_t(S_IFMT))
 #else
         return Int(mode & ~S_IFMT)
 #endif
