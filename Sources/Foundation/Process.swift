@@ -16,6 +16,10 @@ import let WinSDK.STARTF_USESTDHANDLES
 import struct WinSDK.HANDLE
 #endif
 
+#if os(Android)
+import Android
+#endif
+
 #if canImport(Darwin)
 import Darwin
 #endif
@@ -728,7 +732,7 @@ open class Process: NSObject, @unchecked Sendable {
                 throw _NSErrorWithErrno(errno, reading: true, path: launchPath)
             }
 
-            let isRegularFile: Bool = statInfo.st_mode & S_IFMT == S_IFREG
+            let isRegularFile: Bool = statInfo.st_mode & mode_t(S_IFMT) == mode_t(S_IFREG)
             guard isRegularFile == true else {
                 throw NSError(domain: NSCocoaErrorDomain, code: NSFileNoSuchFileError)
             }

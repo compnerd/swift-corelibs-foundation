@@ -16,6 +16,9 @@ import Foundation
 #if os(Windows)
 import WinSDK
 #endif
+#if os(Android)
+import Android
+#endif
 
 public struct HTTPCookiePropertyKey : RawRepresentable, Equatable, Hashable, Sendable {
     public private(set) var rawValue: String

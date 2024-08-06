@@ -14,6 +14,9 @@ fileprivate let UF_HIDDEN: Int32 = 1
 #endif
 
 @_implementationOnly import CoreFoundation
+#if os(Android)
+import Android
+#endif
 #if os(Windows)
 import CRT
 import WinSDK

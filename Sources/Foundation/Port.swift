@@ -113,7 +113,14 @@ fileprivate let FOUNDATION_SOCK_STREAM = Int32(SOCK_STREAM.rawValue)
 fileprivate let FOUNDATION_IPPROTO_TCP = Int32(IPPROTO_TCP)
 #endif
 
-#if canImport(Glibc) && os(Android) || os(OpenBSD)
+#if os(Android)
+import Android
+fileprivate let FOUNDATION_SOCK_STREAM = Int32(Android.SOCK_STREAM)
+fileprivate let FOUNDATION_IPPROTO_TCP = Int32(Android.IPPROTO_TCP)
+fileprivate let INADDR_ANY: in_addr_t = 0
+#endif
+
+#if canImport(Glibc) && os(OpenBSD)
 import Glibc
 fileprivate let FOUNDATION_SOCK_STREAM = Int32(SOCK_STREAM)
 fileprivate let FOUNDATION_IPPROTO_TCP = Int32(IPPROTO_TCP)

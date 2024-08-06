@@ -69,6 +69,11 @@
 #include <sys/stat.h>
 #include <sys/syscall.h>
 #include <termios.h>
+#if defined(__swift__)
+#pragma clang module import posix_filesystem.linux_stat
+#else
+#include <linux/stat.h>
+#endif
 #elif TARGET_OS_WASI
 #include <fcntl.h>
 #include <sys/stat.h>

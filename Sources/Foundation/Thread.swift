@@ -13,7 +13,9 @@
 import WinSDK
 #endif
 
-#if canImport(Glibc)
+#if os(Android)
+import Android
+#elseif canImport(Glibc)
 import Glibc
 #elseif canImport(Musl)
 import Musl

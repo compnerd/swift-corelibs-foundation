@@ -1,6 +1,10 @@
 module CoreFoundation {
     umbrella header "CoreFoundation.h"
 
+    explicit module ForSwiftFoundationOnly {
+      header "ForSwiftFoundationOnly.h"
+    }
+
     export *
     module * {
       export *

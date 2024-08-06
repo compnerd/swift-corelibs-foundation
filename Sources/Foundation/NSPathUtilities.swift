@@ -20,6 +20,9 @@ internal var errno: Int32 {
     set { WASILibc.errno = newValue }
 }
 #endif
+#if os(Android)
+import Android
+#endif
 
 #if os(Windows)
 let validPathSeps: [Character] = ["\\", "/"]
@@ -693,7 +696,7 @@ internal func _NSCreateTemporaryFile(_ filePath: String) throws -> (Int32, Strin
     }
 
     // Set the file mode to match macOS
-    guard fchmod(fd, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) != -1 else {
+    guard fchmod(fd, mode_t(S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) != -1 else {
         let _errno = errno
         close(fd)
         throw _NSErrorWithErrno(_errno, reading: false, path: pathResult)

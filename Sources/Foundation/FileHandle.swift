@@ -19,6 +19,11 @@ import Darwin
 fileprivate let _read = Darwin.read(_:_:_:)
 fileprivate let _write = Darwin.write(_:_:_:)
 fileprivate let _close = Darwin.close(_:)
+#elseif os(Android)
+import Android
+fileprivate let _read = Android.read(_:_:_:)
+fileprivate let _write = Android.write(_:_:_:)
+fileprivate let _close = Android.close(_:)
 #elseif canImport(Glibc)
 import Glibc
 fileprivate let _read = Glibc.read(_:_:_:)
@@ -316,7 +321,7 @@ open class FileHandle : NSObject, @unchecked Sendable {
         }
 
         let readBlockSize: Int
-        if statbuf.st_mode & S_IFMT == S_IFREG {
+        if statbuf.st_mode & mode_t(S_IFMT) == mode_t(S_IFREG) {
             // TODO: Should files over a certain size always be mmap()'d?
             if options.contains(.alwaysMapped) {
                 // Filesizes are often 64bit even on 32bit systems

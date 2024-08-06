@@ -11,6 +11,8 @@
 @_implementationOnly import CoreFoundation
 #if os(Windows)
 import WinSDK
+#elseif os(Android)
+import Android
 #endif
 
 internal let kCFURLPOSIXPathStyle = CFURLPathStyle.cfurlposixPathStyle
@@ -18,7 +20,7 @@ internal let kCFURLWindowsPathStyle = CFURLPathStyle.cfurlWindowsPathStyle
 
 #if canImport(Darwin)
 import Darwin
-#elseif canImport(Glibc)
+#elseif !os(Android) && canImport(Glibc)
 import Glibc
 #elseif canImport(Musl)
 import Musl

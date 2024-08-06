@@ -15,7 +15,9 @@ internal import Synchronization
 // This mimics the behavior of the swift sdk overlay on Darwin
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 @_exported import Darwin
-#elseif canImport(Glibc)
+#elseif os(Android)
+@_exported import Android
+#elseif os(Linux) || CYGWIN || os(OpenBSD)
 @_exported import Glibc
 #elseif canImport(Musl)
 @_exported import Musl

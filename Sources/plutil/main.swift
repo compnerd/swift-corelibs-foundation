@@ -9,6 +9,9 @@
 #if canImport(Darwin)
 import Darwin
 import SwiftFoundation
+#elseif os(Android)
+import Foundation
+import Android
 #elseif canImport(Glibc)
 import Foundation
 import Glibc
